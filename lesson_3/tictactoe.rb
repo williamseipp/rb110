@@ -5,6 +5,8 @@ INITIAL_MARKER = ' '
 PLAYER_MARKER = 'X'
 COMPUTER_MARKER = 'O'
 
+wins = []
+
 def prompt(msg)
   puts "=> #{msg}"
 end
@@ -108,8 +110,14 @@ loop do
 
   if someone_won?(board)
     prompt "#{detect_winner(board)} won!"
+    wins << detect_winner(board)
   else
     prompt "It's a tie!"
+  end
+
+  if wins.count("Player") == 5 || wins.count("Computer") == 5
+    prompt "#{detect_winner(board)} won 5 games!"
+    break
   end
 
   prompt "Play again? (y or n)"
