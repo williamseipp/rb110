@@ -1,4 +1,3 @@
-require 'pry'
 WINNING_LINES = [[1, 2, 3], [4, 5, 6], [7, 8, 9]] +
                 [[1, 4, 7], [2, 5, 8], [3, 6, 9]] +
                 [[1, 5, 9], [3, 5, 7]]
@@ -35,14 +34,30 @@ def initialize_board
 end
 
 def empty_squares(brd)
-  # binding.pry
   brd.keys.select { |num| brd[num] == INITIAL_MARKER }
+end
+
+def joinor(numbers, divider = ', ', word = 'or')
+  choices = ""
+
+  numbers.each do |num|
+    choices << if num == numbers[-2] && numbers.size == 2
+                 "#{num} #{word}"
+               elsif num == numbers[-2] && numbers.size >= 3
+                 "#{num}#{divider}#{word}"
+               elsif num == numbers[-1]
+                 " #{num}"
+               else
+                 "#{num}#{divider}"
+               end
+  end
+  choices
 end
 
 def player_places_piece!(brd)
   square = ''
   loop do
-    prompt "Choose a square (#{empty_squares(brd).join(', ')}):"
+    prompt "Choose a position to place a piece: #{joinor(empty_squares(brd))}"
     square = gets.chomp.to_i
     break if empty_squares(brd).include?(square)
     prompt "Sorry, that's not a valid choice."
