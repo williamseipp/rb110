@@ -96,14 +96,25 @@ end
 loop do
   board = initialize_board
 
+  prompt "Do you want to go first? (y or n)"
+  answer = gets.chomp
+
   loop do
     display_board(board)
 
-    player_places_piece!(board)
-    break if someone_won?(board) || board_full?(board)
+    if answer.downcase.start_with?('y')
+      player_places_piece!(board)
+      break if someone_won?(board) || board_full?(board)
 
-    computer_places_piece!(board)
-    break if someone_won?(board) || board_full?(board)
+      computer_places_piece!(board)
+      break if someone_won?(board) || board_full?(board)
+    else
+      computer_places_piece!(board)
+      break if someone_won?(board) || board_full?(board)
+
+      player_places_piece!(board)
+      break if someone_won?(board) || board_full?(board)
+    end
   end
 
   display_board(board)
