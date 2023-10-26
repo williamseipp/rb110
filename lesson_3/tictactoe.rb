@@ -6,6 +6,7 @@ PLAYER_MARKER = 'X'
 COMPUTER_MARKER = 'O'
 
 wins = []
+current_player = 'human'
 
 def prompt(msg)
   puts "=> #{msg}"
@@ -56,21 +57,24 @@ def joinor(numbers, divider = ', ', word = 'or')
   choices
 end
 
-def player_places_piece!(brd)
-  square = ''
-  loop do
-    prompt "Choose a position to place a piece: #{joinor(empty_squares(brd))}"
-    square = gets.chomp.to_i
-    break if empty_squares(brd).include?(square)
-    prompt "Sorry, that's not a valid choice."
+def threatening_square(brd)
+  square = nil
+  WINNING_LINES.each do |line|
+    if brd.values_at(*line).count(COMPUTER_MARKER) == 2
+      square = line.intersection(empty_squares(brd)).first
+    end
   end
-
-  brd[square] = PLAYER_MARKER
+  square
 end
 
-def computer_places_piece!(brd)
-  square = empty_squares(brd).sample
-  brd[square] = COMPUTER_MARKER
+def winning_square(brd)
+  square = nil
+  WINNING_LINES.each do |line|
+    if brd.values_at(*line).count(PLAYER_MARKER) == 2
+      square = line.intersection(empty_squares(brd)).first
+    end
+  end
+  square
 end
 
 def board_full?(brd)
@@ -93,28 +97,68 @@ def detect_winner(brd)
   nil
 end
 
+def player_choice(brd)
+  square = ''
+  loop do
+    prompt "Choose a position to place a piece: #{joinor(empty_squares(brd))}"
+    square = gets.chomp.to_i
+    break if empty_squares(brd).include?(square)
+    prompt "Sorry, that's not a valid choice."
+  end
+
+  square
+end
+
+def computer_choice(brd)
+  if !winning_square(brd).nil?
+    winning_square(brd)
+  elsif !threatening_square(brd).nil?
+    threatening_square(brd)
+  elsif empty_squares(brd).include?(5)
+    5
+  else
+    empty_squares(brd).sample
+  end
+end
+
+def place_piece!(board, player)
+  if player == 'human'
+    square = player_choice(board)
+    board[square] = PLAYER_MARKER
+  else
+    square = computer_choice(board)
+    board[square] = COMPUTER_MARKER
+  end
+end
+
+def alternate_player(current_player)
+  if current_player == 'human'
+    'computer'
+  else
+    'human'
+  end
+end
+
 loop do
   board = initialize_board
 
   prompt "Do you want to go first? (y or n)"
   answer = gets.chomp
+  if answer.downcase.start_with?('n')
+    prompt "Let's let the computer decide then"
+    current_player = ['human', 'computer'].sample
+    puts "Computer insists you go first" if current_player == 'human'
+    sleep(1.5)
+  else
+    current_player = 'human'
+  end
 
   loop do
     display_board(board)
 
-    if answer.downcase.start_with?('y')
-      player_places_piece!(board)
-      break if someone_won?(board) || board_full?(board)
-
-      computer_places_piece!(board)
-      break if someone_won?(board) || board_full?(board)
-    else
-      computer_places_piece!(board)
-      break if someone_won?(board) || board_full?(board)
-
-      player_places_piece!(board)
-      break if someone_won?(board) || board_full?(board)
-    end
+    place_piece!(board, current_player)
+    current_player = alternate_player(current_player)
+    break if someone_won?(board) || board_full?(board)
   end
 
   display_board(board)
