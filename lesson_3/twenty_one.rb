@@ -50,3 +50,17 @@
 # Data
 # Algorithm
 # Code
+
+def prepare_deck
+  deck = []
+  cards = [2, 3, 4, 5, 6, 7, 8, 9, 10, "jack", "queen", "king", "ace"]
+  suits = ["hearts", "diamonds", "spades", "clubs"]
+  cards.each_with_object([]) do |card, deck|
+    suits.each do |suit|
+      deck << "#{card} of #{suit}"
+    end
+  end
+end
+
+deck = prepare_deck.shuffle
+puts deck
