@@ -58,10 +58,6 @@ def prepare_deck
   end
 end
 
-def deal_card!(deck, hand)
-  hand << deck.shift
-end
-
 def draw_card!(deck, hand)
   hand << deck.shift
 end
@@ -109,10 +105,10 @@ player_hand = []
 dealer_hand = []
 
 # deal 4 cards at start of game, 2 to each player
-deal_card!(deck, player_hand)
-deal_card!(deck, dealer_hand)
-deal_card!(deck, player_hand)
-deal_card!(deck, dealer_hand)
+draw_card!(deck, player_hand)
+draw_card!(deck, dealer_hand)
+draw_card!(deck, player_hand)
+draw_card!(deck, dealer_hand)
 
 # display cards
 display_initial_hands(dealer_hand, player_hand)
