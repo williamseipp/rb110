@@ -21,9 +21,9 @@
 #
 # CARD VALUES: 2-10 = 2-10, JQK = 10, ace 1 or 11
 #
-# ace_value: value is recalculated with each new_card from the deck
-#            if the value of new_card would cause a bust, ace value is 1
-#           ( create simulation after thinking about Algorithm)
+# aces_value: add the total value for all cards; aces are 11
+#           for however many aces you have, keep subtracting 10 from
+#           the total value of the cards if the sum is over 21
 #
 # QUESTIONS:
 #
@@ -52,7 +52,6 @@
 # Code
 
 def prepare_deck
-  deck = []
   cards = [2, 3, 4, 5, 6, 7, 8, 9, 10, "jack", "queen", "king", "ace"]
   suits = ["hearts", "diamonds", "spades", "clubs"]
   cards.each_with_object([]) do |card, deck|
@@ -62,5 +61,93 @@ def prepare_deck
   end
 end
 
+def deal_card!(deck, hand)
+  hand << deck.shift
+end
+
+def draw_card!(deck, hand)
+  hand << deck.shift
+end
+
+def hit_or_stay
+  puts "Would you like to hit or stay? (h for hit, s for stay)"
+  answer = gets.chomp
+end
+
+def display_initial_hands(dealer_hand, player_hand)
+  puts "Dealer has: #{dealer_hand.first} and unknown card"
+  puts "You have: #{player_hand}"
+end
+
+def display_hands(dealer_hand, player_hand)
+  puts "#{dealer_hand}"
+  puts "#{player_hand}"
+end
+
+def total(_hand)
+  values = [20, 24, 17, 7]
+  values.sample
+end
+
+def bust?(total)
+  total > 21
+end
+
+# prepare the deck
 deck = prepare_deck.shuffle
-puts deck
+
+# dealer and player have empty hands
+player_hand = []
+dealer_hand = []
+
+# deal 4 cards at start of game, 2 to each player
+deal_card!(deck, player_hand)
+deal_card!(deck, dealer_hand)
+deal_card!(deck, player_hand)
+deal_card!(deck, dealer_hand)
+
+# display cards
+display_initial_hands(dealer_hand, player_hand)
+
+# player_turn
+loop do
+  total = total(player_hand)
+  puts "your hand is #{player_hand}"
+  if bust?(total)
+    puts "your total was #{total}, you lose!"
+    return
+  end
+  choice = hit_or_stay
+  break if choice == 's'
+  draw_card!(deck, player_hand)
+end
+
+# dealers turn
+loop do
+  total = total(dealer_hand)
+  if bust?(total)
+    puts "dealer's hand is #{total}, you win!"
+    return
+  end
+  break if total >= 17
+  draw_card!(deck, dealer_hand)
+end
+
+# display hands
+puts "let's see em'!"
+display_hands(dealer_hand, player_hand)
+
+# compare hands
+dealer_hand_value = total(dealer_hand)
+player_hand_value = total(player_hand)
+puts "Dealer has #{dealer_hand_value}, you have #{player_hand_value}"
+
+# declare winner
+if player_hand_value > dealer_hand_value
+  puts "you win!"
+elsif dealer_hand_value > player_hand_value
+  puts "you lose!"
+else
+  puts "my my, its a tie!"
+end
+
