@@ -54,7 +54,7 @@
 def prepare_deck
   cards = [2, 3, 4, 5, 6, 7, 8, 9, 10, "Jack", "Queen", "King", "Ace"]
   cards.each_with_object([]) do |card, deck|
-    4.times { deck << card.to_s }
+    4.times { deck << card }
   end
 end
 
@@ -81,9 +81,20 @@ def display_hands(dealer_hand, player_hand)
   puts "#{player_hand}"
 end
 
-def total(_hand)
-  values = [20, 24, 17, 7]
-  values.sample
+def total(hand)
+  sum = 0
+  hand.each do |card|
+    sum += if card == 'Ace'
+             11
+           elsif card.is_a?(String)
+             10
+           else
+             card.to_i
+           end
+  end
+
+  hand.count('Ace').times { sum -= 10 if sum > 21 }
+  sum
 end
 
 def bust?(total)
