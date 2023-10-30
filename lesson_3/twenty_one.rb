@@ -67,14 +67,16 @@ def hit_or_stay
   answer = gets.chomp
 end
 
-def display_initial_hands(dealer_hand, player_hand)
-  puts "Dealer has: #{dealer_hand.first} and unknown card"
-  puts "You have: #{player_hand}"
-end
-
-def display_hands(dealer_hand, player_hand)
-  puts "#{dealer_hand}"
-  puts "#{player_hand}"
+def hand(cards)
+  cards.each_with_object("") do |card, hand|
+    hand << if card == cards[-2]
+              "#{card} and "
+            elsif card == cards[-1]
+              "#{card}"
+            else
+              "#{card}, "
+            end
+  end
 end
 
 def total(hand)
@@ -110,13 +112,12 @@ draw_card!(deck, dealer_hand)
 draw_card!(deck, player_hand)
 draw_card!(deck, dealer_hand)
 
-# display cards
-display_initial_hands(dealer_hand, player_hand)
+puts "Dealer has: #{dealer_hand.first} and unknown card"
 
 # player_turn
 loop do
   total = total(player_hand)
-  puts "your hand is #{player_hand}"
+  puts "Your hand is #{hand(player_hand)}"
   if bust?(total)
     puts "your total was #{total}, you lose!"
     return
@@ -139,7 +140,8 @@ end
 
 # display hands
 puts "let's see em'!"
-display_hands(dealer_hand, player_hand)
+puts "Player has: #{hand(player_hand)}"
+puts "Dealer has: #{hand(dealer_hand)}"
 
 # compare hands
 dealer_hand_value = total(dealer_hand)
