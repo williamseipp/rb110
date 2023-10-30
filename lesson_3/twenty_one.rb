@@ -52,12 +52,9 @@
 # Code
 
 def prepare_deck
-  cards = [2, 3, 4, 5, 6, 7, 8, 9, 10, "jack", "queen", "king", "ace"]
-  suits = ["hearts", "diamonds", "spades", "clubs"]
+  cards = [2, 3, 4, 5, 6, 7, 8, 9, 10, "Jack", "Queen", "King", "Ace"]
   cards.each_with_object([]) do |card, deck|
-    suits.each do |suit|
-      deck << "#{card} of #{suit}"
-    end
+    4.times { deck << card.to_s }
   end
 end
 
@@ -150,4 +147,3 @@ elsif dealer_hand_value > player_hand_value
 else
   puts "my my, its a tie!"
 end
-
