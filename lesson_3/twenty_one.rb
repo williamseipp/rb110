@@ -46,6 +46,13 @@ def bust?(total)
   total > 21
 end
 
+def deal_cards(deck, dealer, player)
+  draw_card!(deck, player)
+  draw_card!(deck, dealer)
+  draw_card!(deck, player)
+  draw_card!(deck, dealer)
+end
+
 # prepare the deck
 deck = prepare_deck.shuffle
 
@@ -53,11 +60,8 @@ deck = prepare_deck.shuffle
 player_hand = []
 dealer_hand = []
 
-# deal 4 cards at start of game, 2 to each player
-draw_card!(deck, player_hand)
-draw_card!(deck, dealer_hand)
-draw_card!(deck, player_hand)
-draw_card!(deck, dealer_hand)
+# deal cards
+deal_cards(deck, dealer_hand, player_hand)
 
 puts "Dealer has: #{dealer_hand.first} and unknown card"
 
